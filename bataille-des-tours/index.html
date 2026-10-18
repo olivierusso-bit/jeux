@@ -26,9 +26,79 @@ canvas{display:block;touch-action:none}
 button{font:inherit;color:#fff;border:0;border-radius:.6em;cursor:pointer;touch-action:manipulation}
 .big{font-size:1.6em;font-weight:900;padding:.45em 1.6em;background:linear-gradient(#ffcf3d,#f59e0b);color:#3b2300;box-shadow:0 .2em 0 #a35d00}
 .mid{font-size:1.05em;font-weight:700;padding:.55em 1.2em;background:#2f4f9e;box-shadow:0 .15em 0 #1b2f63}
-.diff{display:flex;gap:.4em}
-.diff button{font-size:.95em;font-weight:700;padding:.5em .8em;background:#33405e;box-shadow:0 .12em 0 #1c2438}
-.diff button.on{background:#22a35a;box-shadow:0 .12em 0 #12663a}
+/* ---- Lobby ---- */
+#lobby{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;
+  background-color:#1d4f93;
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 2px,transparent 2px 3em),repeating-linear-gradient(-45deg,rgba(255,255,255,.05) 0 2px,transparent 2px 3em),radial-gradient(circle at 50% 40%,#2a6bc0,#163d75 75%)}
+.lb-top{display:flex;align-items:center;gap:.4em;padding:.6em .6em .3em}
+.lvl{position:relative;width:2.3em;height:2.3em;border-radius:.5em;background:linear-gradient(#5aa8ff,#2c6fd6);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.05em;box-shadow:0 .15em 0 #173f86,inset 0 0 0 .12em #9fd0ff;flex:none}
+.xpbar{position:relative;flex:1;height:1.35em;background:#0c234a;border-radius:.7em;overflow:hidden;box-shadow:inset 0 .1em .2em rgba(0,0,0,.5)}
+#xpFill{height:100%;width:0;background:linear-gradient(#7fd3ff,#2f8be0);border-radius:.7em}
+#xpTxt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.72em;font-weight:800;text-shadow:0 1px 1px #000}
+.res{display:flex;align-items:center;gap:.25em;background:#0c234a;border-radius:.7em;padding:.15em .55em .15em .3em;font-size:.95em;font-weight:900;box-shadow:inset 0 .1em .2em rgba(0,0,0,.5);flex:none}
+.res .ic{font-size:1.15em}
+.lb-row2{display:flex;align-items:center;gap:.5em;padding:.2em .6em}
+.profile{flex:1;background:linear-gradient(90deg,#5b2a8a,#3a1d63);border-radius:.7em;padding:.4em .8em;box-shadow:0 .15em 0 #24103f;cursor:pointer}
+.profile .nm{font-weight:900;font-size:1.1em}
+.profile .tro{display:inline-flex;align-items:center;gap:.25em;background:rgba(0,0,0,.35);border-radius:.6em;padding:.05em .55em;margin-top:.25em;font-weight:900;color:#ffd84a}
+.sq{width:2.6em;height:2.6em;font-size:1.3em;background:linear-gradient(#4f8fe8,#2b5fb8);box-shadow:0 .14em 0 #173f86;border-radius:.5em;flex:none}
+.lb-pages{flex:1;position:relative;overflow:hidden}
+.page{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding:.3em .7em .5em;box-sizing:border-box}
+.arena-name{margin-top:.2em;font-size:1.25em;font-weight:900;color:#ffe08a;text-shadow:0 .1em 0 #000}
+.arena-sub{font-size:.8em;opacity:.85}
+.arena-art{width:100%;max-width:24em;margin:.1em auto 0;filter:drop-shadow(0 1em .8em rgba(0,0,0,.45));animation:float 4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-.4em)}}
+.road{position:relative;width:15em;height:1.2em;background:#0c234a;border-radius:.6em;overflow:hidden;margin-top:.2em;box-shadow:inset 0 .1em .2em rgba(0,0,0,.5)}
+#roadFill{height:100%;width:0;background:linear-gradient(#ffe36e,#f2a100)}
+#roadTxt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.7em;font-weight:900;text-shadow:0 1px 1px #000}
+.chests{display:flex;gap:.45em;margin-top:.8em}
+.slot{width:5.4em;height:4.6em;border-radius:.6em;background:rgba(5,20,50,.45);border:.12em dashed rgba(255,255,255,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.9em;color:rgba(255,255,255,.4);box-sizing:border-box}
+.slot.full{border:0;background:linear-gradient(#2f6fde,#1a3f8a);color:#fff;box-shadow:0 .15em 0 #0f2a5e;cursor:pointer;animation:wob 2.4s ease-in-out infinite}
+.slot .ce{font-size:2em;line-height:1}
+.slot .cl{font-size:.7em;font-weight:800;margin-top:.15em}
+.slot .open{font-size:.68em;font-weight:900;background:#22b35a;border-radius:.4em;padding:.05em .4em;margin-top:.15em}
+@keyframes wob{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-4deg)}90%{transform:rotate(4deg)}95%{transform:rotate(-2deg)}}
+.battle-row{display:flex;align-items:stretch;gap:.5em;margin-top:auto;padding-top:.6em;width:100%;max-width:23em}
+.deckbtn{width:5em;background:linear-gradient(#4f8fe8,#2b5fb8);box-shadow:0 .2em 0 #173f86;border-radius:.7em;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1em;padding:.3em 0}
+.deckbtn .de{font-size:2em}
+.deckbtn b{font-size:.8em}
+.battlebtn{flex:1;font-size:2em;font-weight:900;color:#4a2b00;background:linear-gradient(#ffe066,#f5a400);box-shadow:0 .14em 0 #a86200,inset 0 .08em 0 rgba(255,255,255,.6);border-radius:.4em;padding:.25em 0 .2em;display:flex;flex-direction:column;align-items:center;text-shadow:0 .04em 0 rgba(255,255,255,.5)}
+.battlebtn small{font-size:.32em;font-weight:800;color:#6a3c00}
+.battlebtn:active,.deckbtn:active,.buy:active,.up:active{transform:translateY(.1em)}
+.lb-nav{display:flex;background:linear-gradient(#3a4a68,#222c42);border-top:.15em solid #56688f}
+.lb-nav button{flex:1;border-radius:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.4em 0 .5em;font-size:1.6em;opacity:.7;transition:all .12s}
+.lb-nav button span{font-size:.42em;font-weight:900;margin-top:.1em}
+.lb-nav button.on{opacity:1;flex:1.4;background:linear-gradient(#5c7bb8,#34497a);font-size:2em;margin-top:-.25em;border-radius:.3em .3em 0 0}
+.ptitle{font-size:1.4em;font-weight:900;color:#ffe08a;text-shadow:0 .1em 0 #000;margin:.3em 0 .5em}
+.cards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5em;width:100%}
+.ccard{background:linear-gradient(#2c4a8c,#1b2f63);border-radius:.7em;padding:.5em;display:flex;gap:.5em;align-items:center;box-shadow:0 .15em 0 #0f1d40}
+.ccard.spell{background:linear-gradient(#8a4421,#5c2a12)}
+.ccard .ce{font-size:2.2em;width:1.4em;text-align:center}
+.ccard .cn{font-weight:900;font-size:.9em}
+.ccard .cs{font-size:.68em;opacity:.85;line-height:1.35}
+.ccard .lv{display:inline-block;font-size:.66em;font-weight:900;background:#ffcf3d;color:#4a2b00;border-radius:.4em;padding:0 .35em;margin-left:.2em}
+.up{margin-top:.3em;font-size:.72em;font-weight:900;background:linear-gradient(#3fd06e,#1f9a4a);box-shadow:0 .15em 0 #136332;padding:.3em .5em;border-radius:.45em}
+.up.no{background:#55607a;box-shadow:0 .15em 0 #30384a}
+.shop-item{width:100%;display:flex;align-items:center;gap:.7em;background:linear-gradient(#2c4a8c,#1b2f63);border-radius:.8em;padding:.6em .8em;margin-bottom:.55em;box-shadow:0 .15em 0 #0f1d40;box-sizing:border-box}
+.shop-item .se{font-size:2.4em}
+.shop-item .st{flex:1;font-weight:900}
+.shop-item .st small{display:block;font-weight:600;font-size:.75em;opacity:.8}
+.buy{font-size:.9em;font-weight:900;background:linear-gradient(#3fd06e,#1f9a4a);box-shadow:0 .15em 0 #136332;padding:.45em .7em;border-radius:.5em;white-space:nowrap}
+.buy.no{background:#55607a;box-shadow:0 .15em 0 #30384a}
+.arena-row{width:100%;display:flex;align-items:center;gap:.7em;border-radius:.8em;padding:.6em .8em;margin-bottom:.5em;box-sizing:border-box;box-shadow:0 .15em 0 rgba(0,0,0,.35)}
+.arena-row .ae{font-size:2.2em}
+.arena-row .an{flex:1;font-weight:900}
+.arena-row .an small{display:block;font-weight:700;font-size:.75em;opacity:.85}
+.arena-row.lock{filter:grayscale(.85);opacity:.6}
+.arena-row.cur{outline:.18em solid #ffd84a}
+.modal{position:absolute;inset:0;background:rgba(5,10,30,.82);display:flex;align-items:center;justify-content:center;z-index:5}
+.mbox{background:linear-gradient(#2c4a8c,#18295a);border-radius:1em;padding:1em 1.1em;max-width:22em;width:86%;text-align:center;box-shadow:0 .3em 0 #0c1736,0 0 0 .15em #6f93d6}
+.mbox h3{margin:.1em 0 .5em;font-size:1.4em;color:#ffe08a}
+.reward{font-size:1.3em;font-weight:900;margin:.3em 0}
+.big-chest{font-size:4.5em;animation:pop .5s ease-out}
+@keyframes pop{0%{transform:scale(.3) rotate(-20deg)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+#toast{position:absolute;left:50%;top:6em;transform:translateX(-50%);background:rgba(10,16,38,.9);padding:.5em 1em;border-radius:.7em;font-weight:800;font-size:.95em;opacity:0;transition:opacity .25s;pointer-events:none;z-index:6;white-space:nowrap}
+.rw-line{font-size:1.15em;font-weight:900;margin:.15em 0}
 .how{font-size:.86em;line-height:1.45;background:rgba(255,255,255,.08);border-radius:.6em;padding:.7em .9em;text-align:left;max-width:22em}
 .crowns{font-size:2.2em}
 #loading{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;background:#0e1730;z-index:10;font-size:16px}
@@ -45,34 +115,70 @@ button{font:inherit;color:#fff;border:0;border-radius:.6em;cursor:pointer;touch-
 <div id="wrap">
   <div id="game">
     <canvas id="cv"></canvas>
-    <div id="menu" class="ov">
-      <div class="title">⚔️ Bataille<br>des Tours</div>
-      <div class="sub">Détruis la tour du roi ennemi !</div>
-      <div class="diff" id="diffBox">
-        <button data-d="facile">Facile</button>
-        <button data-d="normal" class="on">Normal</button>
-        <button data-d="difficile">Difficile</button>
+    <div id="lobby">
+      <div class="lb-top">
+        <div class="lvl" id="lvlNum">1</div>
+        <div class="xpbar"><div id="xpFill"></div><span id="xpTxt">0/100</span></div>
+        <div class="res"><span class="ic">🪙</span><span id="goldTxt">0</span></div>
+        <div class="res"><span class="ic">💎</span><span id="gemTxt">0</span></div>
       </div>
-      <button id="playBtn" class="big">JOUER</button>
-      <button id="howBtn" class="mid">Comment jouer ?</button>
-      <div id="how" class="how hidden">
+      <div class="lb-row2">
+        <div class="profile" id="nameBtn"><div class="nm"><span id="nameTxt">Joueur</span> ✏️</div><div class="tro">🏆 <span id="troTxt">0</span></div></div>
+        <button class="sq" id="howBtn">❓</button>
+      </div>
+      <div class="lb-pages">
+        <div class="page" id="pg-battle">
+          <div class="arena-name" id="arenaName"></div>
+          <div class="arena-sub" id="arenaSub"></div>
+          <div class="arena-art" id="arenaArt"></div>
+          <div class="road"><div id="roadFill"></div><span id="roadTxt"></span></div>
+          <div class="chests" id="chests"></div>
+          <div class="battle-row">
+            <button class="deckbtn" id="deckBtn"><span class="de">🃏</span><b>8 cartes</b></button>
+            <button class="battlebtn" id="playBtn">Combat<small id="battleSub"></small></button>
+          </div>
+        </div>
+        <div class="page hidden" id="pg-shop"><div class="ptitle">🛒 Boutique</div><div id="shopList" style="width:100%"></div></div>
+        <div class="page hidden" id="pg-cards"><div class="ptitle">🃏 Mes cartes</div><div class="cards-grid" id="cardsGrid"></div></div>
+        <div class="page hidden" id="pg-road"><div class="ptitle">🏆 Arènes</div><div id="roadList" style="width:100%"></div></div>
+      </div>
+      <nav class="lb-nav" id="nav">
+        <button data-p="shop">🛒<span>Boutique</span></button>
+        <button data-p="cards">🃏<span>Cartes</span></button>
+        <button data-p="battle" class="on">⚔️<span>Combat</span></button>
+        <button data-p="road">🏆<span>Arènes</span></button>
+      </nav>
+      <div id="howBox" class="modal hidden"><div class="mbox">
+        <h3>Comment jouer ?</h3>
+        <div class="how" style="max-width:none">
         👆 <b>Touche une carte</b>, puis <b>touche l'arène</b> pour poser la troupe (ou fais glisser la carte).<br>
         💧 Chaque carte coûte de l'<b>élixir</b> (barre violette), qui se recharge tout seul.<br>
-        🏰 Tu peux poser tes troupes seulement <b>dans ta moitié</b>. Si tu détruis une petite tour, tu peux poser plus loin de ce côté.<br>
-        👑 Une petite tour = 1 couronne, la tour du roi = 3 couronnes et la victoire !<br>
-        ⏱️ 3 minutes. À la dernière minute, l'élixir va 2 fois plus vite.
-      </div>
+        🏰 Pose tes troupes <b>dans ta moitié</b>. Une petite tour détruite = tu peux poser plus loin de ce côté.<br>
+        👑 Petite tour = 1 couronne, tour du roi = 3 couronnes et la victoire !<br>
+        🏆 Gagne des <b>trophées</b> pour débloquer de nouvelles arènes (adversaires plus forts).<br>
+        🎁 Ouvre tes <b>coffres</b>, gagne de l'<b>or</b> 🪙 et <b>améliore tes cartes</b>.
+        </div>
+        <button class="big" style="margin-top:.6em" data-close>OK</button>
+      </div></div>
+      <div id="chestModal" class="modal hidden"><div class="mbox">
+        <div class="big-chest" id="cmIcon">🎁</div>
+        <h3 id="cmTitle"></h3>
+        <div id="cmBody"></div>
+        <button class="big" style="margin-top:.6em" data-close>Super !</button>
+      </div></div>
+      <div id="toast"></div>
     </div>
     <div id="pauseOv" class="ov hidden">
       <div class="title" style="font-size:2em">⏸ Pause</div>
       <button id="resumeBtn" class="big">REPRENDRE</button>
       <button id="quitBtn" class="mid">Abandonner</button>
     </div>
-    <div id="endOv" class="ov hidden">
+    <div id="endOv" class="ov hidden" style="background:rgba(10,16,38,.95)">
       <div id="endTitle" class="title" style="font-size:2.2em"></div>
       <div id="endCrowns" class="crowns"></div>
-      <button id="againBtn" class="big">REJOUER</button>
-      <button id="menuBtn" class="mid">Menu</button>
+      <div id="endRewards"></div>
+      <button id="menuBtn" class="big">OK</button>
+      <button id="againBtn" class="mid">Rejouer</button>
     </div>
   </div>
 </div>
@@ -108,6 +214,30 @@ const DIFFS={
   normal:   {regen:1.0,  think:1.0, attackAt:7, defend:0.85},
   difficile:{regen:1.2,  think:0.55,attackAt:6, defend:1}
 };
+
+const ARENAS=[
+  {name:'Prairie des Gobelins', min:0,    icon:'👺', g1:'#6cbf4f', g2:'#64b647', diff:'facile'},
+  {name:'Fosse aux Os',         min:300,  icon:'💀', g1:'#a3a77a', g2:'#9a9e70', diff:'normal'},
+  {name:'Vallée des Dragons',   min:700,  icon:'🐉', g1:'#d2a861', g2:'#c99f57', diff:'normal'},
+  {name:'Forêt Enchantée',      min:1200, icon:'🌲', g1:'#3f9a6a', g2:'#389163', diff:'difficile'},
+  {name:'Château de Glace',     min:1800, icon:'❄️', g1:'#a9d7ee', g2:'#9fcfe8', diff:'difficile'},
+  {name:'Tour des Champions',   min:2600, icon:'🏆', g1:'#b483dc', g2:'#aa79d3', diff:'difficile'}
+];
+const CHESTS={
+  bois:  {name:'Coffre en bois', icon:'📦', gold:[50,90],   gems:[0,1]},
+  argent:{name:'Coffre d\'argent', icon:'🎁', gold:[120,200], gems:[2,4]},
+  or:    {name:'Coffre d\'or',    icon:'💰', gold:[300,450], gems:[6,10]}
+};
+const MAXLV=9;
+const upCost=l=>50*l*l;
+const lvMult=l=>Math.pow(1.1,l-1);
+const SAVE_KEY='bdt_save_v1';
+let save={name:'Joueur',trophies:0,best:0,gold:100,gems:10,level:1,xp:0,levels:{},chests:[null,null,null,null],freeDay:'',wins:0};
+try{const r=localStorage.getItem(SAVE_KEY); if(r) save=Object.assign(save,JSON.parse(r));}catch(e){}
+for(const k in CARDS) if(!save.levels[k]) save.levels[k]=1;
+function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(save));}catch(e){}}
+function arenaIdx(t){let i=0;for(let k=0;k<ARENAS.length;k++) if(t>=ARENAS[k].min) i=k;return i;}
+let curArena=ARENAS[0], aiLevel=1;
 
 // ---------- Canvas / taille ----------
 const game=$('game'), canvas=$('cv'), ctx=canvas.getContext('2d');
@@ -155,8 +285,8 @@ function makeDeck(){const k=shuffle(Object.keys(CARDS));return {hand:k.slice(0,4
 function cycle(d,i){const k=d.hand[i];d.hand[i]=d.queue.shift();d.queue.push(k);}
 
 function tower(team,kind,x,y){
-  const k=kind==='king';
-  return {building:true,team,kind,x,y,radius:k?28:22,hp:k?3600:2200,maxHp:k?3600:2200,dmg:k?95:80,range:k?145:150,
+  const k=kind==='king', m=lvMult(team===0?Math.min(save.level,MAXLV):aiLevel), hp=Math.round((k?3600:2200)*m);
+  return {building:true,team,kind,x,y,radius:k?28:22,hp,maxHp:hp,dmg:Math.round((k?95:80)*m),range:k?145:150,
     hitSpeed:k?1.0:0.8,cd:0,active:!k,alive:true,hitsAir:true,lane:x<W/2?0:1,flash:0,target:null};
 }
 function resetGame(){
@@ -184,15 +314,15 @@ function validPos(team,x,y){
 
 // ---------- Création ----------
 function spawn(key,team,x,y){
-  const c=CARDS[key];
+  const c=CARDS[key], m=lvMult(team===0?save.levels[key]:aiLevel);
   if(c.spell){
     const k=towers.find(t=>t.team===team&&t.kind==='king');
-    projs.push({x:k.x,y:k.y,tx:x,ty:y,sx:k.x,sy:k.y,speed:430,spell:true,team,dmg:c.dmg,radius:c.radius,emoji:c.emoji});
+    projs.push({x:k.x,y:k.y,tx:x,ty:y,sx:k.x,sy:k.y,speed:430,spell:true,team,dmg:Math.round(c.dmg*m),radius:c.radius,emoji:c.emoji});
     return;
   }
   for(let i=0;i<c.count;i++){
     const a=c.count===1?0:i/c.count*Math.PI*2+0.5, r=c.count===1?0:15;
-    units.push({team,key,emoji:c.emoji,x:clamp(x+Math.cos(a)*r,10,W-10),y:clamp(y+Math.sin(a)*r,10,AH-10),hp:c.hp,maxHp:c.hp,dmg:c.dmg,
+    units.push({team,key,emoji:c.emoji,x:clamp(x+Math.cos(a)*r,10,W-10),y:clamp(y+Math.sin(a)*r,10,AH-10),hp:Math.round(c.hp*m),maxHp:Math.round(c.hp*m),dmg:Math.round(c.dmg*m),
       hitSpeed:c.hitSpeed,range:c.range,speed:c.speed,radius:c.radius,flying:!!c.flying,hitsAir:!!c.hitsAir,
       buildingsOnly:!!c.buildingsOnly,proj:!!c.proj,splash:c.splash||0,cd:0.3,deploy:1.0,target:null,retarget:0,alive:true,flash:0,lunge:0,moving:false,ph:Math.random()*6});
   }
@@ -435,28 +565,191 @@ document.addEventListener('gesturestart',e=>e.preventDefault());
 document.addEventListener('contextmenu',e=>e.preventDefault());
 
 // ---------- Menus ----------
-function show(id){for(const o of ['menu','pauseOv','endOv']) $(o).classList.toggle('hidden',o!==id);}
-document.querySelectorAll('#diffBox button').forEach(b=>b.addEventListener('click',()=>{
-  document.querySelectorAll('#diffBox button').forEach(x=>x.classList.remove('on'));
-  b.classList.add('on'); diffKey=b.dataset.d; diff=DIFFS[diffKey];
-}));
-$('howBtn').addEventListener('click',()=>$('how').classList.toggle('hidden'));
-function start(){resetGame();state='play';show(null);beep(440,0.1,'triangle',0.05);banner('⚔️ C\'est parti !');}
+function show(id){for(const o of ['lobby','pauseOv','endOv']) $(o).classList.toggle('hidden',o!==id);}
+let toastT=0;
+function toast(t){const e=$('toast');e.textContent=t;e.style.opacity=1;clearTimeout(toastT);toastT=setTimeout(()=>e.style.opacity=0,1800);}
+function openModal(id){$(id).classList.remove('hidden');}
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>{b.closest('.modal').classList.add('hidden');refreshLobby();}));
+$('howBtn').addEventListener('click',()=>openModal('howBox'));
+$('nameBtn').addEventListener('click',()=>{
+  let n=null; try{n=prompt('Ton nom de joueur ?',save.name);}catch(e){}
+  if(n&&n.trim()){save.name=n.trim().slice(0,16);persist();refreshLobby();}
+});
+let page='battle';
+function setPage(p){
+  page=p;
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  for(const k of ['battle','shop','cards','road']) $('pg-'+k).classList.toggle('hidden',k!==p);
+  refreshLobby(); beep(600,0.04,'triangle',0.03);
+}
+document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>setPage(b.dataset.p)));
+$('deckBtn').addEventListener('click',()=>setPage('cards'));
+
+function addXp(n){
+  save.xp+=n; let up=false;
+  while(save.xp>=save.level*100){save.xp-=save.level*100;save.level++;save.gems+=5;up=true;}
+  if(up) setTimeout(()=>toast('⭐ Niveau '+save.level+' ! +5 💎'),300);
+}
+function rint(a){return Math.floor(a[0]+Math.random()*(a[1]-a[0]+1));}
+
+function arenaSVG(A,idx){
+  const red='#d93b3b',blue='#2f6fde';
+  const tw=(x,y,c,king)=>`<g transform="translate(${x},${y})"><rect x="${king?-17:-13}" y="${king?-30:-24}" width="${king?34:26}" height="${king?34:26}" rx="4" fill="#9aa0aa" stroke="#4b5059" stroke-width="2"/><rect x="${king?-12:-9}" y="${king?-25:-20}" width="${king?24:18}" height="${king?24:18}" rx="3" fill="${c}"/><text x="0" y="${king?-8:-6}" font-size="${king?18:13}" text-anchor="middle" dominant-baseline="middle">${king?'👑':'🏹'}</text></g>`;
+  return `<svg viewBox="0 0 300 230" xmlns="http://www.w3.org/2000/svg" width="100%">
+  <defs><linearGradient id="rk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5d6474"/><stop offset="1" stop-color="#2c313c"/></linearGradient>
+  <radialGradient id="gl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff6b0" stop-opacity=".55"/><stop offset="1" stop-color="#fff6b0" stop-opacity="0"/></radialGradient></defs>
+  <ellipse cx="150" cy="120" rx="140" ry="95" fill="url(#gl)"/>
+  <path d="M30 120 L150 60 L270 120 L240 185 L150 215 L60 185 Z" fill="url(#rk)"/>
+  <path d="M60 185 L150 215 L240 185 L232 196 L150 226 L68 196 Z" fill="#20242c"/>
+  <path d="M30 120 L150 60 L270 120 L150 180 Z" fill="${A.g1}" stroke="rgba(0,0,0,.25)" stroke-width="2"/>
+  <path d="M90 90 L210 150" stroke="#3b9fdc" stroke-width="14"/>
+  <path d="M90 90 L210 150" stroke="rgba(255,255,255,.3)" stroke-width="2" stroke-dasharray="8 8"/>
+  <rect x="118" y="91" width="20" height="26" fill="#8a5a2b" transform="rotate(26.6 128 104)"/>
+  <rect x="162" y="113" width="20" height="26" fill="#8a5a2b" transform="rotate(26.6 172 126)"/>
+  ${tw(150,92,red,true)}${tw(105,105,red)}${tw(200,80,red)}
+  ${tw(150,170,blue,true)}${tw(100,160,blue)}${tw(195,137,blue)}
+  <g transform="translate(150,32)"><circle r="24" fill="#ffd23f" stroke="#a86200" stroke-width="3"/><text y="2" font-size="28" text-anchor="middle" dominant-baseline="middle">${A.icon}</text></g>
+  <circle cx="40" cy="70" r="3" fill="#fff" opacity=".7"><animate attributeName="opacity" values=".1;.9;.1" dur="2s" repeatCount="indefinite"/></circle>
+  <circle cx="262" cy="92" r="2.5" fill="#fff" opacity=".7"><animate attributeName="opacity" values=".9;.1;.9" dur="2.6s" repeatCount="indefinite"/></circle>
+  <circle cx="232" cy="40" r="2" fill="#ffe08a"><animate attributeName="opacity" values=".2;1;.2" dur="1.7s" repeatCount="indefinite"/></circle>
+  </svg>`;
+}
+
+function refreshLobby(){
+  $('lvlNum').textContent=save.level;
+  const need=save.level*100;
+  $('xpFill').style.width=Math.min(100,save.xp/need*100)+'%';
+  $('xpTxt').textContent=save.xp+' / '+need+' XP';
+  $('goldTxt').textContent=save.gold; $('gemTxt').textContent=save.gems;
+  $('nameTxt').textContent=save.name; $('troTxt').textContent=save.trophies;
+  const ai=arenaIdx(save.trophies), A=ARENAS[ai], N=ARENAS[ai+1];
+  $('arenaName').textContent=A.name;
+  $('arenaSub').textContent='Arène '+(ai+1)+' · adversaires niveau '+(ai+1);
+  $('arenaArt').innerHTML=arenaSVG(A,ai);
+  if(N){const f=(save.trophies-A.min)/(N.min-A.min);$('roadFill').style.width=(f*100)+'%';$('roadTxt').textContent='🏆 '+save.trophies+' / '+N.min+' → '+N.name;}
+  else{$('roadFill').style.width='100%';$('roadTxt').textContent='🏆 Arène maximale !';}
+  $('battleSub').textContent=A.icon+' '+A.name;
+  // coffres
+  const ch=$('chests'); ch.innerHTML='';
+  save.chests.forEach((c,i)=>{
+    const d=document.createElement('div');
+    if(c){const C=CHESTS[c];d.className='slot full';d.innerHTML='<div class="ce">'+C.icon+'</div><div class="cl">'+C.name.replace('Coffre ','')+'</div><div class="open">OUVRIR</div>';d.addEventListener('click',()=>openChest(i));}
+    else{d.className='slot';d.innerHTML='<div style="font-size:1.6em">🔒</div><div class="cl">Vide</div>';}
+    ch.appendChild(d);
+  });
+  if(page==='cards') renderCards();
+  if(page==='shop') renderShop();
+  if(page==='road') renderRoad();
+}
+function openChest(i,typeOverride){
+  const c=typeOverride||save.chests[i]; if(!c) return;
+  const C=CHESTS[c], g=rint(C.gold), gm=rint(C.gems);
+  save.gold+=g; save.gems+=gm; if(!typeOverride) save.chests[i]=null; addXp(10); persist();
+  $('cmIcon').textContent=C.icon; $('cmTitle').textContent=C.name;
+  $('cmBody').innerHTML='<div class="reward">🪙 +'+g+' or</div>'+(gm?'<div class="reward">💎 +'+gm+'</div>':'')+'<div class="reward" style="font-size:.9em;opacity:.85">⭐ +10 XP</div>';
+  $('cmIcon').style.animation='none'; void $('cmIcon').offsetWidth; $('cmIcon').style.animation='';
+  openModal('chestModal');
+  [523,659,784].forEach((f,k)=>setTimeout(()=>beep(f,0.12,'triangle',0.06),k*90));
+  refreshLobby();
+}
+function cardStats(k,l){const c=CARDS[k],m=lvMult(l);return c.spell?('Dégâts '+Math.round(c.dmg*m)):('PV '+Math.round(c.hp*m)+' · Dégâts '+Math.round(c.dmg*m));}
+function renderCards(){
+  const g=$('cardsGrid'); g.innerHTML='';
+  for(const k in CARDS){
+    const c=CARDS[k], l=save.levels[k], cost=upCost(l), can=save.gold>=cost&&l<MAXLV;
+    const d=document.createElement('div'); d.className='ccard'+(c.spell?' spell':'');
+    d.innerHTML='<div class="ce"></div><div style="flex:1;min-width:0"><div class="cn"></div><div class="cs"></div></div>';
+    d.querySelector('.ce').textContent=c.emoji;
+    d.querySelector('.cn').innerHTML='';d.querySelector('.cn').textContent=c.name;
+    const lv=document.createElement('span');lv.className='lv';lv.textContent='Niv. '+l;d.querySelector('.cn').appendChild(lv);
+    d.querySelector('.cs').innerHTML='💧 '+c.cost+(c.count>1?' · ×'+c.count:'')+'<br>'+cardStats(k,l);
+    const b=document.createElement('button'); b.className='up'+(can?'':' no');
+    b.textContent= l>=MAXLV ? 'Niveau max' : '⬆ '+cost+' 🪙';
+    b.addEventListener('click',()=>{
+      if(l>=MAXLV) return;
+      if(save.gold<cost){toast("Pas assez d'or 🪙");beep(180,0.12,'square',0.03);return;}
+      save.gold-=cost; save.levels[k]=l+1; addXp(l*10); persist();
+      toast('⬆ '+c.name+' niveau '+(l+1)+' !'); [660,880].forEach((f,i)=>setTimeout(()=>beep(f,0.1,'triangle',0.06),i*80));
+      refreshLobby();
+    });
+    d.children[1].appendChild(b);
+    g.appendChild(d);
+  }
+}
+function today(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function renderShop(){
+  const L=$('shopList'); L.innerHTML='';
+  const items=[
+    {e:'🎁',t:'Coffre gratuit du jour',s:'Reviens chaque jour !',price: save.freeDay===today()?'Demain':'GRATUIT',ok:save.freeDay!==today(),
+     act:()=>{save.freeDay=today();persist();openChest(-1,'argent');}},
+    {e:'🪙',t:'Petit sac d\'or',s:'250 pièces d\'or',price:'10 💎',ok:save.gems>=10,act:()=>{save.gems-=10;save.gold+=250;persist();toast('+250 🪙');}},
+    {e:'💰',t:'Gros sac d\'or',s:'800 pièces d\'or',price:'25 💎',ok:save.gems>=25,act:()=>{save.gems-=25;save.gold+=800;persist();toast('+800 🪙');}},
+    {e:'📦',t:'Coffre en bois',s:'De l\'or et parfois des gemmes',price:'80 🪙',ok:save.gold>=80,act:()=>{save.gold-=80;persist();openChest(-1,'bois');}},
+    {e:'💎',t:'Coffre d\'or',s:'Beaucoup d\'or et de gemmes',price:'30 💎',ok:save.gems>=30,act:()=>{save.gems-=30;persist();openChest(-1,'or');}}
+  ];
+  for(const it of items){
+    const d=document.createElement('div'); d.className='shop-item';
+    d.innerHTML='<div class="se"></div><div class="st"></div>';
+    d.querySelector('.se').textContent=it.e;
+    d.querySelector('.st').textContent=it.t; const sm=document.createElement('small'); sm.textContent=it.s; d.querySelector('.st').appendChild(sm);
+    const b=document.createElement('button'); b.className='buy'+(it.ok?'':' no'); b.textContent=it.price;
+    b.addEventListener('click',()=>{ if(!it.ok){toast(it.price==='Demain'?'Déjà pris aujourd\'hui 😉':'Pas assez !');beep(180,0.12,'square',0.03);return;} it.act(); beep(700,0.08,'triangle',0.05); refreshLobby(); });
+    d.appendChild(b); L.appendChild(d);
+  }
+}
+function renderRoad(){
+  const L=$('roadList'); L.innerHTML='';
+  const cur=arenaIdx(save.trophies);
+  ARENAS.forEach((A,i)=>{
+    const d=document.createElement('div');
+    d.className='arena-row'+(i>cur?' lock':'')+(i===cur?' cur':'');
+    d.style.background='linear-gradient(90deg,'+A.g1+',#1b2f63 75%)';
+    d.innerHTML='<div class="ae"></div><div class="an"></div><div style="font-weight:900">'+(i>cur?'🔒':(i===cur?'📍':'✅'))+'</div>';
+    d.querySelector('.ae').textContent=A.icon;
+    d.querySelector('.an').textContent='Arène '+(i+1)+' : '+A.name;
+    const sm=document.createElement('small'); sm.textContent='🏆 '+A.min+' trophées · adversaires niveau '+(i+1); d.querySelector('.an').appendChild(sm);
+    L.appendChild(d);
+  });
+}
+
+function start(){
+  const ai=arenaIdx(save.trophies);
+  curArena=ARENAS[ai]; aiLevel=ai+1; diffKey=curArena.diff; diff=DIFFS[diffKey];
+  resetGame();state='play';show(null);beep(440,0.1,'triangle',0.05);banner('⚔️ '+curArena.name);
+}
+function toLobby(){state='menu';show('lobby');refreshLobby();}
 $('playBtn').addEventListener('click',start);
 $('againBtn').addEventListener('click',start);
-$('menuBtn').addEventListener('click',()=>{state='menu';show('menu');});
+$('menuBtn').addEventListener('click',toLobby);
 function pause(){if(state!=='play')return;state='pause';show('pauseOv');drag=null;}
 $('resumeBtn').addEventListener('click',()=>{state='play';show(null);});
-$('quitBtn').addEventListener('click',()=>{state='menu';show('menu');});
+$('quitBtn').addEventListener('click',toLobby);
 document.addEventListener('visibilitychange',()=>{if(document.hidden) pause();});
 
 function showEnd(){
   state='end';
-  const t = crowns[0]>crowns[1]?'🏆 Victoire !':crowns[0]<crowns[1]?'Défaite…':'Égalité';
+  const win=crowns[0]>crowns[1], lose=crowns[0]<crowns[1];
+  const t = win?'🏆 Victoire !':lose?'Défaite…':'Égalité';
   $('endTitle').textContent=t;
   $('endCrowns').innerHTML='<span style="color:#7fb0ff">'+crowns[0]+' 👑</span> &nbsp;–&nbsp; <span style="color:#ff8a8a">'+crowns[1]+' 👑</span>';
+  // récompenses
+  const before=arenaIdx(save.trophies);
+  let dT=0,gold=0,xp=0,chest=null,full=false;
+  if(win){dT=28+Math.floor(Math.random()*5);gold=30+crowns[0]*10;xp=20;save.wins++;
+    const r=Math.random(); const type=r<0.08?'or':r<0.35?'argent':'bois';
+    const free=save.chests.indexOf(null); if(free>=0){save.chests[free]=type;chest=type;} else full=true;}
+  else if(lose){dT=-Math.min(20,save.trophies-ARENAS[before].min);gold=10;xp=5;}
+  else{gold=15;xp=10;}
+  save.trophies=Math.max(0,save.trophies+dT); save.best=Math.max(save.best,save.trophies); save.gold+=gold; addXp(xp); persist();
+  const after=arenaIdx(save.trophies);
+  let h='<div class="rw-line" style="color:#ffd84a">🏆 '+(dT>=0?'+':'')+dT+' trophées</div>';
+  h+='<div class="rw-line">🪙 +'+gold+' or &nbsp; ⭐ +'+xp+' XP</div>';
+  if(chest) h+='<div class="rw-line">'+CHESTS[chest].icon+' '+CHESTS[chest].name+' gagné !</div>';
+  if(full) h+='<div class="rw-line" style="font-size:.85em;opacity:.85">Emplacements de coffres pleins : ouvre-les !</div>';
+  if(after>before) h+='<div class="rw-line" style="color:#7dffa8">🎉 Nouvelle arène : '+ARENAS[after].name+' !</div>';
+  $('endRewards').innerHTML=h;
   show('endOv');
-  if(crowns[0]>crowns[1]){[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,0.15,'triangle',0.06),i*120));}
+  if(win){[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,0.15,'triangle',0.06),i*120));}
   else beep(160,0.5,'sawtooth',0.05);
 }
 
@@ -494,7 +787,7 @@ function text(t,x,y,s,col,align,bold){ctx.font=(bold===false?'':'bold ')+s+'px s
   ctx.lineWidth=Math.max(2,s/5);ctx.strokeStyle='rgba(0,0,0,.65)';ctx.strokeText(t,x,y);ctx.fillStyle=col||'#fff';ctx.fillText(t,x,y);}
 
 function drawArena(){
-  for(let y=0;y<AH;y+=30) for(let x=0;x<W;x+=30){ctx.fillStyle=((x+y)/30)%2?'#6cbf4f':'#64b647';ctx.fillRect(x,y,30,30);}
+  for(let y=0;y<AH;y+=30) for(let x=0;x<W;x+=30){ctx.fillStyle=((x+y)/30)%2?curArena.g1:curArena.g2;ctx.fillRect(x,y,30,30);}
   // chemins
   ctx.fillStyle='rgba(222,190,130,.55)';
   for(const bx of BR){ctx.fillRect(bx-13,100,26,420);}
@@ -675,12 +968,12 @@ function loop(now){
   render();
   requestAnimationFrame(loop);
 }
-resetGame(); resize(); requestAnimationFrame(loop);
+resetGame(); resize(); refreshLobby(); requestAnimationFrame(loop);
 
 // accès pour les tests
 window.__bt={get state(){return state;},get units(){return units.length;},get elixir(){return elixir;},
   get crowns(){return crowns.slice();},get towers(){return towers.map(t=>Math.round(t.hp));},
-  get hand(){return pDeck.hand.slice();},get dbg(){return {endAt,gameT,time,overtime};},setElixir(v){elixir=v;},setTime(v){time=v;},touchMode};
+  get hand(){return pDeck.hand.slice();},get save(){return save;},get dbg(){return {endAt,gameT,time,overtime};},setElixir(v){elixir=v;},setTime(v){time=v;},touchMode};
 })();
 </script>
 </body>
