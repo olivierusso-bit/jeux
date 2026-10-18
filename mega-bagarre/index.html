@@ -1062,7 +1062,7 @@ function charRec(hid,skin){const key=hid+'|'+(skin||'');if(REC[key])return REC[k
  return REC[key]={key,body,legL,legR,armL,armR,glass:glass.p.length?glass:null,piv:{legL:[-.14,.42,0],legR:[.14,.42,0],armL:[-.32,.84,0],armR:[.32,.84,0]}};
 }
 // ===================== RENDU 3D DU JEU =====================
-let E3G=null,PE=null;const GDPR=Math.min(window.devicePixelRatio||1,2);
+let E3G=null,PE=null;let GDPR=Math.min(window.devicePixelRatio||1,2);
 const USE3D_WANT=Q.get('3d')!=='0';
 function charMeshes(E,rec){const k='ch:'+rec.key;if(!E.cache[k]){E.cache[k]={body:E.upload(rec.body),legL:E.upload(rec.legL),legR:E.upload(rec.legR),armL:E.upload(rec.armL),armR:E.upload(rec.armR),glass:rec.glass?E.upload(rec.glass):null}}return E.cache[k]}
 function drawChar(E,hid,skin,Mb,o){o=o||{};const rec=charRec(hid,skin);const m=charMeshes(E,rec);const a=o.a===undefined?1:o.a,em=o.em,tint=o.tint;const sw=o.sw||0,P=rec.piv;
@@ -2170,6 +2170,7 @@ function resize(){
  DPR=Math.min(window.devicePixelRatio||1,3,Math.max(1,1150/Math.max(1,Math.min(cw,ch))));
  if((window.devicePixelRatio||1)>=1.5)DPR=Math.max(DPR,Math.min(window.devicePixelRatio,1.5));
  cv.width=Math.round(cw*DPR);cv.height=Math.round(ch*DPR);
+ GDPR=Math.min(window.devicePixelRatio||1,2);if(isTouch)GDPR=Math.min(GDPR,Math.max(1,1150/Math.max(1,Math.min(cw,ch))));
  try{const pr=document.createElement('div');pr.style.cssText='position:fixed;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)';document.body.appendChild(pr);const cs=getComputedStyle(pr);safeL=parseFloat(cs.paddingLeft)||0;safeR=parseFloat(cs.paddingRight)||0;pr.remove()}catch(e){}
  SK=ch/640;SW=cw/SK;SH=640;if(SW<1000){SK=cw/1000;SW=1000;SH=ch/SK}
  stage.style.width=SW+'px';stage.style.height=SH+'px';stage.style.transform=`scale(${SK})`;
