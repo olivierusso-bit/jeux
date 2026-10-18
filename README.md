@@ -7,6 +7,7 @@ Page d'accueil : **https://olivierusso-bit.github.io/jeux/**
 | 🏰 Bataille des Tours | https://olivierusso-bit.github.io/jeux/bataille-des-tours/ |
 | 🚇 Métro Rush | https://olivierusso-bit.github.io/jeux/metro-rush/ |
 | 🦆 Méga Bagarre | https://olivierusso-bit.github.io/jeux/mega-bagarre/ |
+| 🪂 Battle Royale 10h | https://olivierusso-bit.github.io/jeux/battle-royale-10h/ |
 
 ## Ajouter un jeu
 1. Créer un dossier (ex. `mon-jeu/`) avec un `index.html` dedans.
