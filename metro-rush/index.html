@@ -12,7 +12,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ff5a36'/%3E%3Cpath d='M14 50 L26 14 H38 L50 50 Z' fill='%23263056'/%3E%3Cpath d='M30 18h4v8h-4zM30 30h4v8h-4zM30 42h4v8h-4z' fill='%23ffd23f'/%3E%3C/svg%3E">
 <style>
   :root{--ink:#1b1f3a;--hot:#ff5a36;--sun:#ffd23f;--sky:#3b8fd9;--ok:#2fd27a}
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   html,body{margin:0;height:100%;overflow:hidden;background:#1b1f3a;overscroll-behavior:none;touch-action:none}
   body{position:fixed;inset:0;font-family:"Arial Rounded MT Bold","Arial Black",system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
   #c{position:absolute;inset:0;display:block;width:100%;height:100%;touch-action:none}
@@ -133,6 +134,18 @@
   @keyframes pop{0%{transform:scale(.2) rotate(-20deg)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
   .tog{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.08);border-radius:14px;padding:10px 12px;margin-bottom:10px;font-size:17px}
   #bShield{position:absolute;left:max(12px,env(safe-area-inset-left));bottom:calc(max(12px,env(safe-area-inset-bottom)) + 8px);display:none;align-items:center;justify-content:center;gap:4px;height:58px;padding:0 14px;border-radius:16px;border:3px solid #fff;background:linear-gradient(#5fb6ff,#2d6fd6);color:#fff;font:inherit;font-size:22px;font-weight:900;pointer-events:auto;box-shadow:0 4px 0 rgba(0,0,0,.35)}
+  /* flèches tactiles (option) */
+  #arrows{position:absolute;left:0;right:0;bottom:0;display:none;justify-content:space-between;align-items:flex-end;padding:0 max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));pointer-events:none}
+  body.arr #arrows{display:flex}
+  #arrows .ag{display:flex;gap:10px;align-items:flex-end}
+  #arrows .ag.v{flex-direction:column;gap:8px}
+  .ab{width:74px;height:74px;border-radius:22px;border:3px solid rgba(255,255,255,.75);background:rgba(27,31,58,.38);color:#fff;font-size:36px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;pointer-events:auto;touch-action:none;box-shadow:0 4px 0 rgba(0,0,0,.25);opacity:.85}
+  .ab.on{background:rgba(255,210,63,.55);transform:scale(.92);opacity:1}
+  #arrows .ag.v .ab{height:64px}
+  body.arr #bShield{bottom:calc(max(12px,env(safe-area-inset-bottom)) + 96px)}
+  body.arr #powers{bottom:calc(max(12px,env(safe-area-inset-bottom)) + 166px)}
+  @media (max-height:430px){.ab{width:66px;height:66px;font-size:32px}#arrows .ag.v .ab{height:54px}#arrows .ag.v{gap:6px}body.arr #bShield{bottom:calc(max(12px,env(safe-area-inset-bottom)) + 84px)}body.arr #powers{bottom:calc(max(12px,env(safe-area-inset-bottom)) + 150px)}}
+  #bArr{margin-left:8px}
   #oExtra{margin-top:10px;font-size:16px;line-height:1.5}
   #oExtra .ok{color:#7ee05a;font-weight:900}
 </style>
@@ -157,6 +170,10 @@
   <div id="hint"></div>
   <div id="warn">ATTENTION !</div>
   <button id="bShield" aria-label="Bouclier"></button>
+  <div id="arrows">
+    <div class="ag"><button class="ab" id="aL" data-a="left" aria-label="Gauche">⬅️</button><button class="ab" id="aR" data-a="right" aria-label="Droite">➡️</button></div>
+    <div class="ag v"><button class="ab" id="aU" data-a="up" aria-label="Sauter">⬆️</button><button class="ab" id="aD" data-a="down" aria-label="Rouler">⬇️</button></div>
+  </div>
 </div>
 
 <div id="lobby">
@@ -191,7 +208,7 @@
   <div class="card">
     <p class="oops">PAUSE</p>
     <button class="big" id="bResume">▶ REPRENDRE</button><br>
-    <button class="small" id="bQuit">Menu</button>
+    <button class="small" id="bQuit">Menu</button><button class="small hidden" id="bArr">Flèches : oui</button>
   </div>
 </div>
 
@@ -899,10 +916,10 @@ function updHud(){
   if(lastHud.sb!==sb){lastHud.sb=sb;bShieldEl.textContent=sb;bShieldEl.style.display=sb?'flex':'none';}
   if(lastHud.p!==h){lastHud.p=h;powEl.innerHTML=h;}
 }
-var HELP_T='<b>Glisse ton doigt</b> sur l\'écran :<br>⬅️ ➡️ changer de voie · ⬆️ sauter · ⬇️ rouler';
+var HELP_T='<b>Glisse ton doigt</b> sur l\'écran :<br>⬅️ ➡️ changer de voie · ⬆️ sauter · ⬇️ rouler<br><b>Ou touche</b> : à gauche = voie de gauche, à droite = voie de droite, au milieu = sauter<br><b>Ou</b> les grosses flèches en bas (à cacher dans ⚙️ Réglages)';
 var HELP_K='<b>Clavier</b> : ← → changer de voie · ↑ ou Espace sauter · ↓ rouler · P pause';
 var bShieldEl=$('bShield');
-function showHint(){hintEl.innerHTML=TOUCH?'Glisse ⬅️ ➡️ pour changer de voie<br>⬆️ sauter · ⬇️ rouler':'← → changer de voie · ↑ sauter · ↓ rouler';hintEl.style.opacity=1;hintT=setTimeout(hideHint,5000);}
+function showHint(){hintEl.innerHTML=TOUCH?(arrOn?'Glisse ou touche les flèches<br>⬅️ ➡️ voie · ⬆️ sauter · ⬇️ rouler':'Glisse ⬅️ ➡️ pour changer de voie<br>⬆️ sauter · ⬇️ rouler<br>ou touche à gauche · milieu · droite'):'← → changer de voie · ↑ sauter · ↓ rouler';clearTimeout(hintT);hintEl.style.opacity=1;hintT=setTimeout(hideHint,5000);}
 function hideHint(){hintEl.style.opacity=0;}
 var warnTO;
 function flashWarn(t){warnEl.textContent=t||'ATTENTION ! LE GARDIEN !';warnEl.style.opacity=1;clearTimeout(warnTO);warnTO=setTimeout(function(){warnEl.style.opacity=0;},1400);}
@@ -968,6 +985,7 @@ pBody.addEventListener('click',function(e){
   else if(b.id==='rstA'){b.id='rstB';b.textContent='Sûr ? Touche encore pour tout effacer';}
   else if(b.id==='rstB'){['best','bank','shields','char','owned','up','runs','stats','gift','mlvl','missions'].forEach(function(k){try{localStorage.removeItem('metrorush_'+k);}catch(e){}});location.reload();}
   else if(b.id==='sndT'){muted=!muted;save('muted',muted);setSoundBtn();unlockAudio();openSettings();}
+  else if(b.id==='arrT'){setArrows(!arrOn);openSettings();}
   else if(b.hasAttribute('data-goshop')){openShop();}
 });
 function openMe(){
@@ -1021,6 +1039,7 @@ function claimGift(){
 }
 function openSettings(){
   openPanel('⚙️ RÉGLAGES','<div class="tog"><span>Son</span><button class="buy" id="sndT">'+(muted?'🔇 Coupé':'🔊 Activé')+'</button></div>'+
+  (TOUCH?'<div class="tog"><span>Flèches à l\'écran</span><button class="buy'+(arrOn?'':' done')+'" id="arrT">'+(arrOn?'⬅️➡️ Oui':'Non')+'</button></div>':'')+
   '<div class="tog"><span>Effacer ma progression</span><button class="buy no" id="rstA">Effacer</button></div>'+
   '<p style="opacity:.8;font-size:14px;text-align:center">La progression est gardée sur cet appareil.</p>');
 }
@@ -1078,15 +1097,20 @@ function showOver(){
   $('oScore').textContent=fmt(s);$('oCoins').textContent=ncoins;$('oDist').textContent=d;
   $('rec').textContent=rec?'🏆 NOUVEAU RECORD !':'Record : '+fmt(best);
   $('oExtra').innerHTML='🪙 Tirelire : <b>'+fmt(bank)+'</b> pièces'+extra;
-  hud.classList.add('hidden');$('over').classList.remove('hidden');
+  hud.classList.add('hidden');$('over').classList.remove('hidden');overAt=performance.now();
 }
+var overAt=0;
 function tapBtn(id,fn){var el=$(id);el.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();fn();});}
-tapBtn('bAgain',startGame);
-tapBtn('bMenu',toMenu);tapBtn('bQuit',toMenu);
+// évite qu'un enfant qui tapotait pendant la course appuie sans le vouloir sur REJOUER / Menu
+function overReady(fn){return function(){if(performance.now()-overAt<700)return;fn();};}
+tapBtn('bAgain',overReady(startGame));
+tapBtn('bMenu',overReady(toMenu));tapBtn('bQuit',toMenu);
 tapBtn('bPause',pauseGame);tapBtn('bResume',resumeGame);
 tapBtn('bSound',function(){muted=!muted;save('muted',muted);setSoundBtn();unlockAudio();});
 ['bPause','bSound'].forEach(function(id){$(id).addEventListener('touchstart',function(e){e.stopPropagation();},{passive:true});});
 document.addEventListener('visibilitychange',function(){if(document.hidden)pauseGame();});
+window.addEventListener('pagehide',pauseGame);
+if(TOUCH){$('bArr').classList.remove('hidden');tapBtn('bArr',function(){setArrows(!arrOn);});}
 
 /* ---------- commandes ---------- */
 var keyMap={ArrowLeft:'left',KeyA:'left',KeyQ:'left',ArrowRight:'right',KeyD:'right',ArrowUp:'up',KeyW:'up',KeyZ:'up',Space:'up',ArrowDown:'down',KeyS:'down'};
@@ -1107,13 +1131,35 @@ function swMove(x,y){
 }
 cv.addEventListener('touchstart',function(e){e.preventDefault();var t=e.changedTouches[0];swStart(t.clientX,t.clientY,t.identifier);},{passive:false});
 cv.addEventListener('touchmove',function(e){e.preventDefault();if(!sw)return;for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];if(t.identifier===sw.id)swMove(t.clientX,t.clientY);}},{passive:false});
-cv.addEventListener('touchend',function(e){e.preventDefault();for(var i=0;i<e.changedTouches.length;i++)if(sw&&e.changedTouches[i].identifier===sw.id)sw=null;},{passive:false});
+// petite touche rapide (sans glisser) : tiers gauche = gauche, tiers droit = droite, milieu = sauter
+function swTap(x){
+  if(!sw||sw.used)return; // le doigt n'a pas glissé assez : c'est une touche
+  act(x<W/3?'left':x>W*2/3?'right':'up');
+}
+cv.addEventListener('touchend',function(e){e.preventDefault();for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];if(sw&&t.identifier===sw.id){swTap(t.clientX);sw=null;}}},{passive:false});
 cv.addEventListener('touchcancel',function(){sw=null;});
+// grosses flèches à l'écran (option, mode tactile)
+var arrOn=TOUCH&&load('arrows',true);
+function setArrows(v){arrOn=!!v;save('arrows',arrOn);document.body.classList.toggle('arr',arrOn);$('bArr').textContent='Flèches : '+(arrOn?'oui':'non');}
+if(TOUCH)setArrows(arrOn);
+Array.prototype.forEach.call(document.querySelectorAll('#arrows .ab'),function(b){
+  var a=b.getAttribute('data-a'),off=function(){b.classList.remove('on');};
+  b.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();unlockAudio();b.classList.add('on');act(a);},{passive:false});
+  b.addEventListener('touchend',function(e){e.preventDefault();off();},{passive:false});
+  b.addEventListener('touchcancel',off);
+  b.addEventListener('mousedown',function(e){e.preventDefault();e.stopPropagation();act(a);});
+});
 // souris (glisser) pour PC
 cv.addEventListener('mousedown',function(e){swStart(e.clientX,e.clientY,'m');});
 window.addEventListener('mousemove',function(e){if(sw&&sw.id==='m')swMove(e.clientX,e.clientY);});
 window.addEventListener('mouseup',function(){if(sw&&sw.id==='m')sw=null;});
 document.addEventListener('gesturestart',function(e){e.preventDefault();});
+if(TOUCH){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();});
+  document.addEventListener('dblclick',function(e){e.preventDefault();},{passive:false});
+  // bloque le double-toucher qui zoome (iOS) sans gêner les boutons
+  var lastTE=0;document.addEventListener('touchend',function(e){var n=performance.now();if(n-lastTE<320&&!(e.target.closest&&e.target.closest('button,.scroll')))e.preventDefault();lastTE=n;},{passive:false});
+}
 document.addEventListener('touchmove',function(e){if(e.target.closest&&e.target.closest('.scroll'))return;e.preventDefault();},{passive:false});
 
 /* ---------- boucle ---------- */
@@ -1129,7 +1175,7 @@ function frame(now){
   requestAnimationFrame(frame);
 }
 reset();
-window.__game={act:act,start:startGame,state:function(){return {mode:mode,lane:pl.lane,x:pl.x,y:pl.y,z:pl.z,score:score,coins:ncoins,dist:dist,slide:pl.slideT,stumble:stumbleT};},objs:function(){return objs;},frames:function(){return fpsN;},check:function(){var bad=[];for(var z=50;z<pl.z+FAR-10;z+=0.5){var ok=false;for(var l=0;l<3;l++){var blk=objs.some(function(o){return o.t==='train'&&Math.abs(o.x-LANES[l])<0.1&&z>=o.z0-1&&z<=o.z1+1&&!objs.some(function(r){return r.t==='ramp'&&Math.abs(r.z1-o.z0)<0.01&&r.x===o.x;});});if(!blk)ok=true;}if(!ok)bad.push(z);}return bad;},regen:function(){reset();dist=0;},menu:function(){return toMenu();}};
+window.__game={act:act,start:startGame,state:function(){return {mode:mode,lane:pl.lane,x:pl.x,y:pl.y,z:pl.z,score:score,coins:ncoins,dist:dist,slide:pl.slideT,stumble:stumbleT,jumps:rs.jumps,slides:rs.slides,shields:shields,shieldT:shieldT};},objs:function(){return objs;},frames:function(){return fpsN;},check:function(){var bad=[];for(var z=50;z<pl.z+FAR-10;z+=0.5){var ok=false;for(var l=0;l<3;l++){var blk=objs.some(function(o){return o.t==='train'&&Math.abs(o.x-LANES[l])<0.1&&z>=o.z0-1&&z<=o.z1+1&&!objs.some(function(r){return r.t==='ramp'&&Math.abs(r.z1-o.z0)<0.01&&r.x===o.x;});});if(!blk)ok=true;}if(!ok)bad.push(z);}return bad;},regen:function(){reset();dist=0;},crash:function(){shieldT=0;crash('train');},menu:function(){return toMenu();}};
 requestAnimationFrame(frame);
 })();
 </script>
