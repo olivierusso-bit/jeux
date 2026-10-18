@@ -826,6 +826,7 @@ html.touch .slot.pick { width: 74px; }
 #t-build  { right: 150px; bottom: 365px; }
 #t-edit   { right: 255px; bottom: 395px; }
 #t-drop   { right: 440px; bottom: 200px; }
+#t-horn   { right: 40px;  bottom: 345px; }
 /* tir gauche (haut gauche, au-dessus du joystick) */
 #t-fire2  { left: 40px; top: 150px; width: 104px; height: 104px; }
 
@@ -849,6 +850,15 @@ html.touch.portrait #rotate-hint { display: flex; position: fixed; inset: 0; z-i
 #t-close { position: fixed; top: 14px; right: 14px; z-index: 45; padding: 14px 22px; font-size: 22px; color: #fff; background: rgba(200,30,30,0.85); border: 3px solid #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); touch-action: none; }
 #t-close.hidden { display: none; }
 html.touch .pause-box { max-height: 96vh; overflow-y: auto; }
+/* la couche des menus ne doit pas bloquer les fenêtres du HUD (augmentations, personnages) quand aucun menu n'est affiché */
+html.touch #menu-root { pointer-events: none; }
+html.touch #menu-root > :not(.hidden) { pointer-events: auto; }
+/* écran de fin : défilement au doigt et boutons toujours visibles en bas */
+html.touch #m-results { touch-action: pan-y; -webkit-overflow-scrolling: touch; }
+html.touch .res-wrap { padding-top: 12px; padding-bottom: 0; gap: 14px; }
+html.touch .res-title .rp { font-size: 64px; }
+html.touch .res-title .rt { font-size: 36px; }
+html.touch .res-btns { position: sticky; bottom: 0; margin-top: 0; padding: 10px 0 14px; background: linear-gradient(0deg, rgba(5,10,40,0.95) 60%, rgba(5,10,40,0)); z-index: 2; }
 
 </style>
 </head>
@@ -2205,6 +2215,7 @@ window.G = window.G || {};
     ['build', 'CONSTRUIRE', 'sm', 'key:a'],
     ['edit', 'MODIFIER', 'sm', 'key:g'],
     ['drop', 'JETER', 'sm', 'key:x'],
+    ['horn', 'KLAXON', 'sm', 'key:h'],
   ];
   const TOP = [
     ['pause', '❚❚', 'pause'], ['map', 'CARTE', 'key:m'], ['inv', 'SAC', 'key:tab'],
@@ -2366,6 +2377,11 @@ window.G = window.G || {};
     const cp = document.getElementById('click-play');
     if (cp && !cp.classList.contains('hidden') && !e.target.closest('button, .btn, input, select, a')) I.requestLock();
   });
+  // augmentations : la touche R (relancer) devient « touchez le bas de la fenêtre »
+  document.addEventListener('pointerup', (e) => {
+    const f = e.target.closest && e.target.closest('#aug-dlg .ag-f');
+    if (f && G.Aug && G.Aug.open && G.Aug.rerolls > 0 && G.Aug.reroll) G.Aug.reroll();
+  });
   let firstTouch = true;
   document.addEventListener('pointerup', () => { if (firstTouch) { firstTouch = false; goFullscreen(false); } }, true);
 
@@ -2385,6 +2401,7 @@ window.G = window.G || {};
     ['Emplacements en bas à droite', 'Changer d\'arme (la pioche à gauche)'],
     ['SAC / CARTE', 'Inventaire / carte (touchez la carte pour poser un marqueur)'],
     ['EMOTE', 'Maintenir puis glisser vers une emote, relâcher'],
+    ['KLAXON', 'Klaxonner (en voiture)'],
   ].map((r) => `<tr><td class="k">${r[0]}</td><td>${r[1]}</td></tr>`).join('') + '</table>';
   const INGAME = { warmup: 1, bus: 1, playing: 1, ended: 1 };
   let wasVisible = false;
@@ -2421,6 +2438,7 @@ window.G = window.G || {};
     show('edit', !dead && !bus && !air && !veh && !G.Match.zeroBuild);
     show('drop', !dead && !bus && !air && !veh && !pl.buildMode && pl.sel >= 0 && !!pl.slots[pl.sel]);
     const canUse = !!(inter && !inter.classList.contains('hidden'));
+    show('horn', !dead && veh && !!(pl.vehicle && pl.vehicle.isCar));
     show('use', !dead && !bus && (canUse || veh || pst === 'zip' || pst === 'hide'));
     B.use.classList.toggle('hot', canUse);
     show('emote', !dead && !air && !veh);
@@ -2446,7 +2464,12 @@ window.G = window.G || {};
     G.pixelRatioFor = (q) => {
       const target = [650, 850, 1100, 1400][q] || 1100;      // hauteur de rendu visée en pixels physiques
       const dpr = window.devicePixelRatio || 1;
-      return Math.max(0.75, Math.min(dpr, target / Math.max(1, window.innerHeight)));
+      const h = Math.max(1, window.innerHeight);
+      // vrais pixels de l'écran en hauteur (la page est dézoomée : 1 px CSS ≠ 1 px écran)
+      const portrait = window.matchMedia('(orientation: portrait)').matches;
+      const physH = (portrait ? Math.max(screen.width, screen.height) : Math.min(screen.width, screen.height)) * dpr;
+      const maxR = Math.max(0.5, physH / h);              // ne jamais dépasser la définition réelle de l'écran
+      return Math.max(Math.min(0.85, maxR), Math.min(maxR, target / h));
     };
     build();
     requestAnimationFrame(tick);
@@ -19115,7 +19138,7 @@ window.G = window.G || {};
       const a = byId[id];
       s += `<div class="ag-card" data-i="${i}"><div class="ag-k fn">${i + 1}</div><div class="ag-ico">${a.ico}</div><div class="ag-n fn">${a.name}</div><div class="ag-d">${a.desc}</div></div>`;
     });
-    s += '</div><div class="ag-f">' + (AG.rerolls > 0 ? '<b>R</b> relancer (1) · ' : '') + '<b>U</b> / <b>Échap</b> plus tard' + (AG.pending > 1 ? ' · encore ' + (AG.pending - 1) + ' après celle-ci' : '') + '</div>';
+    s += '</div><div class="ag-f">' + (AG.rerolls > 0 ? (G.Touch && G.Touch.enabled ? '<b>Touchez ici</b> pour relancer (1) · ' : '<b>R</b> relancer (1) · ') : '') + '<b>U</b> / <b>Échap</b> plus tard' + (AG.pending > 1 ? ' · encore ' + (AG.pending - 1) + ' après celle-ci' : '') + '</div>';
     d.innerHTML = s;
     d.querySelectorAll('.ag-card').forEach((c) => c.onclick = () => AG.choose(+c.dataset.i));
   }
