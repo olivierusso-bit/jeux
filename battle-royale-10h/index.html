@@ -8517,10 +8517,47 @@ window.G = window.G || {};
     }
     return got;
   };
-  C.byCat = (cat) => C.list.filter((i) => i.cat === cat && !i.styleOf && (!i.botOnly || G.Store.isUnlocked(i.id)));
-  C.skinsForBots = () => C.list.filter((i) => i.cat === 'skin');
+  C.byCat = (cat) => C.list.filter((i) => i.cat === cat && !i.styleOf && ((!i.botOnly && !i.creator) || G.Store.isUnlocked(i.id)));
+  C.skinsForBots = () => C.list.filter((i) => i.cat === 'skin' && !i.creator);
   // marquer les tenues réservées aux bots
   ['skin_docteur', 'skin_cuistot', 'skin_sportive', 'skin_hipster', 'skin_zombie', 'skin_agente', 'skin_explo'].forEach((id) => { C.items[id].botOnly = true; C.items[id].shop = true; });
+  // ---------------- PACK DU CRÉATEUR (exclusif, débloqué par un code secret) ----------------
+  const crea = (it) => { it.creator = true; delete it.shop; return it; };
+  crea(add('skin', 'skin_createur', 'Le Créateur', 'légendaire', { body: 'm', skin: 0xf0c8a0, hair: { style: 'spiky', color: 0xffe070 }, hat: { type: 'crown', color: 0x30e0ff }, top: { style: 'armor', color: 0x1a1a2e, color2: 0x30e0ff, pattern: 'gold' }, pants: { color: 0x14142a, pattern: 'armor' }, shoes: 0xffd040, gloves: 0x30e0ff, extra: ['cape', 'shoulders', 'belt'], cape: 0xffd040, glow: 0x30e0ff, face: { mouth: 'smirk', brows: 'normal', glowEyes: 0x30e0ff } }, 'Exclusif : réservé au créateur du jeu.'));
+  crea(add('back', 'back_createur', 'Ailes du Créateur', 'légendaire', { model: 'wings', color: 0xffd040 }, 'Exclusif : réservé au créateur du jeu.'));
+  crea(add('pickaxe', 'pick_createur', 'Sceptre du Créateur', 'légendaire', { model: 'laser', color: 0xffd040, color2: 0x1a1a2e, glow: true }, 'Exclusif : réservé au créateur du jeu.'));
+  crea(add('glider', 'glider_createur', 'Planeur du Créateur', 'légendaire', { model: 'wing', color: 0x30e0ff, rainbow: true }, 'Exclusif : réservé au créateur du jeu.'));
+
+  // Code secret : ouvrir le jeu avec ?createur=CODE (une seule fois suffit, c'est enregistré dans le navigateur)
+  const CREATOR_CODE = 'CREA-9W3PQT';
+  function creatorGrant() {
+    let code = null;
+    try { code = new URLSearchParams(location.search).get('createur'); } catch (e) {}
+    if (!code || code.trim().toUpperCase() !== CREATOR_CODE) return;
+    // on retire le code de l'adresse pour ne pas le partager par erreur
+    try { const u = new URL(location.href); u.searchParams.delete('createur'); history.replaceState(null, '', u.pathname + u.search + u.hash); } catch (e) {}
+    const d = G.Store.data;
+    if (!d.creatorGranted) { d.vbucks = (d.vbucks || 0) + 1000000; d.creatorGranted = true; }
+    ['skin_createur', 'back_createur', 'pick_createur', 'glider_createur'].forEach((id) => G.Store.unlock(id));
+    d.equipped.skin = 'skin_createur'; d.equipped.back = 'back_createur'; d.equipped.pickaxe = 'pick_createur'; d.equipped.glider = 'glider_createur';
+    G.Store.save();
+    C.creatorJustGranted = true;
+  }
+  const origLoad = G.Store.load;
+  G.Store.load = function () { const r = origLoad.apply(this, arguments); try { creatorGrant(); } catch (e) {} return r; };
+  // message de bienvenue une fois le chargement terminé
+  window.addEventListener('load', () => {
+    const iv = setInterval(() => {
+      const l = document.getElementById('loading');
+      if (!C.creatorJustGranted || !l || !l.classList.contains('hidden')) return;
+      clearInterval(iv);
+      const t = document.createElement('div');
+      t.textContent = '👑 MODE CRÉATEUR : +1 000 000 Pièces, tenue, sac à dos, pioche et planeur exclusifs débloqués et équipés !';
+      t.style.cssText = 'position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:999;max-width:90vw;padding:14px 22px;border-radius:12px;background:linear-gradient(90deg,#1a1a2e,#2a3a7a);border:3px solid #ffd040;color:#fff;font:bold 18px Arial,sans-serif;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.5)';
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 9000);
+    }, 500);
+  });
 })();
 
 </script>
