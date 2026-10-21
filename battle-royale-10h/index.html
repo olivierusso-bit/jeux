@@ -723,6 +723,10 @@ table.ctrl td.k { color: #ffd83a; font-weight: bold; white-space: nowrap; }
 .card.shop-card.owned { filter: saturate(0.75); }
 .shop-info { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; background: rgba(0,0,0,0.3); padding: 10px 12px; min-height: 30px; }
 .shop-info:empty { display: none; }
+.shop-code { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0 4px; background: rgba(0,0,0,0.3); padding: 8px 10px; border-left: 4px solid #ffd040; }
+.shop-code input { font: 16px Arial, sans-serif; padding: 7px 10px; width: 170px; border: 2px solid rgba(255,255,255,0.6); background: rgba(0,10,40,0.6); color: #fff; text-transform: uppercase; letter-spacing: 1px; user-select: text; -webkit-user-select: text; }
+.shop-code #shop-code-msg { flex-basis: 100%; font-size: 14px; }
+.shop-code #shop-code-msg:empty { display: none; }
 .btn.dis { opacity: 0.55; cursor: default; }
 .vb-gain { margin-top: 6px; font: bold 16px Arial, sans-serif; color: #9af0ff; }
 .tab, .vb-box, .lvl-box { white-space: nowrap; }
@@ -8528,36 +8532,21 @@ window.G = window.G || {};
   crea(add('pickaxe', 'pick_createur', 'Sceptre du Créateur', 'légendaire', { model: 'laser', color: 0xffd040, color2: 0x1a1a2e, glow: true }, 'Exclusif : réservé au créateur du jeu.'));
   crea(add('glider', 'glider_createur', 'Planeur du Créateur', 'légendaire', { model: 'wing', color: 0x30e0ff, rainbow: true }, 'Exclusif : réservé au créateur du jeu.'));
 
-  // Code secret : ouvrir le jeu avec ?createur=CODE (une seule fois suffit, c'est enregistré dans le navigateur)
+  // Code secret : à taper dans la BOUTIQUE (case « Code secret »). Enregistré dans le navigateur.
   const CREATOR_CODE = 'CREA-9W3PQT';
-  function creatorGrant() {
-    let code = null;
-    try { code = new URLSearchParams(location.search).get('createur'); } catch (e) {}
-    if (!code || code.trim().toUpperCase() !== CREATOR_CODE) return;
-    // on retire le code de l'adresse pour ne pas le partager par erreur
-    try { const u = new URL(location.href); u.searchParams.delete('createur'); history.replaceState(null, '', u.pathname + u.search + u.hash); } catch (e) {}
+  const CREATOR_ITEMS = ['skin_createur', 'back_createur', 'pick_createur', 'glider_createur'];
+  C.redeemCode = function (raw) {
+    const code = String(raw || '').trim().toUpperCase().replace(/\s+/g, '');
+    if (!code) return { ok: false, msg: 'Tape un code.' };
+    if (code !== CREATOR_CODE) return { ok: false, msg: 'Code invalide.' };
     const d = G.Store.data;
-    if (!d.creatorGranted) { d.vbucks = (d.vbucks || 0) + 1000000; d.creatorGranted = true; }
-    ['skin_createur', 'back_createur', 'pick_createur', 'glider_createur'].forEach((id) => G.Store.unlock(id));
+    const first = !d.creatorGranted;
+    if (first) { d.vbucks = (d.vbucks || 0) + 1000000; d.creatorGranted = true; }
+    CREATOR_ITEMS.forEach((id) => G.Store.unlock(id));
     d.equipped.skin = 'skin_createur'; d.equipped.back = 'back_createur'; d.equipped.pickaxe = 'pick_createur'; d.equipped.glider = 'glider_createur';
     G.Store.save();
-    C.creatorJustGranted = true;
-  }
-  const origLoad = G.Store.load;
-  G.Store.load = function () { const r = origLoad.apply(this, arguments); try { creatorGrant(); } catch (e) {} return r; };
-  // message de bienvenue une fois le chargement terminé
-  window.addEventListener('load', () => {
-    const iv = setInterval(() => {
-      const l = document.getElementById('loading');
-      if (!C.creatorJustGranted || !l || !l.classList.contains('hidden')) return;
-      clearInterval(iv);
-      const t = document.createElement('div');
-      t.textContent = '👑 MODE CRÉATEUR : +1 000 000 Pièces, tenue, sac à dos, pioche et planeur exclusifs débloqués et équipés !';
-      t.style.cssText = 'position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:999;max-width:90vw;padding:14px 22px;border-radius:12px;background:linear-gradient(90deg,#1a1a2e,#2a3a7a);border:3px solid #ffd040;color:#fff;font:bold 18px Arial,sans-serif;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.5)';
-      document.body.appendChild(t);
-      setTimeout(() => t.remove(), 9000);
-    }, 500);
-  });
+    return { ok: true, first, msg: first ? '👑 MODE CRÉATEUR : +1 000 000 Pièces, tenue, sac à dos, pioche et planeur exclusifs débloqués et équipés !' : '👑 Pack du Créateur déjà activé : objets rééquipés.' };
+  };
 })();
 
 </script>
@@ -22037,10 +22026,26 @@ window.G = window.G || {};
     const left = 86400000 - (Date.now() % 86400000);
     const hh = Math.floor(left / 3600000), mm = Math.floor(left / 60000) % 60, ss = Math.floor(left / 1000) % 60;
     let h = `<h2 class="fn">BOUTIQUE D'OBJETS</h2><div class="shop-timer sub">Nouveaux objets dans <b id="shop-timer">${hh}:${U.fmt2(mm)}:${U.fmt2(ss)}</b> · Vous avez <span class="vb">P</span><b>${fmtVb(d.vbucks || 0)}</b> Pièces (+100 par niveau, +300 par Victoire Royale)</div>
+      <div class="shop-code"><span class="fn">🔑 CODE SECRET</span><input id="shop-code-in" type="text" maxlength="24" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Entre un code"><button class="btn fn" id="shop-code-ok">VALIDER</button><span id="shop-code-msg" class="sub"></span></div>
       <div class="shop-sec fn">À LA UNE</div><div class="shop-feat">${featured.map((it) => shopCard(it, true)).join('')}</div>
       <div class="shop-sec fn">OBJETS DU JOUR</div><div class="shop-daily">${daily.map((it) => shopCard(it, false)).join('')}</div>
       <div class="shop-info" id="shop-info"></div>`;
     p.innerHTML = h;
+    {
+      const inp = document.getElementById('shop-code-in'), msg = document.getElementById('shop-code-msg');
+      inp.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter') document.getElementById('shop-code-ok').click(); });
+      inp.addEventListener('keyup', (e) => e.stopPropagation());
+      document.getElementById('shop-code-ok').onclick = () => {
+        const r = C.redeemCode(inp.value);
+        if (!r.ok) { msg.textContent = r.msg; msg.style.color = '#ff8a8a'; G.Audio.play('build_fail'); return; }
+        G.Audio.play('unlock'); G.Audio.play('levelup');
+        MN.confetti && MN.confetti(120);
+        MN.shopSel = null;
+        MN.refreshTop(); MN.renderShop();
+        if (MN.previewItem) MN.previewItem(C.items.skin_createur);
+        const m2 = document.getElementById('shop-code-msg'); if (m2) { m2.textContent = r.msg; m2.style.color = '#ffd040'; }
+      };
+    }
     p.querySelectorAll('.card').forEach((c) => {
       c.addEventListener('mouseenter', () => G.Audio.play('ui_hover'));
       c.addEventListener('click', () => { MN.shopSel = c.dataset.id; G.Audio.play('ui_click'); MN.previewItem(C.items[c.dataset.id]); MN.renderShop(); });
