@@ -9,6 +9,7 @@ Page d'accueil : **https://olivierusso-bit.github.io/jeux/**
 | 🦆 Méga Bagarre | https://olivierusso-bit.github.io/jeux/mega-bagarre/ |
 | 🪂 Battle Royale 10h | https://olivierusso-bit.github.io/jeux/battle-royale-10h/ |
 | 🌈 Parcours Arc-en-ciel | https://olivierusso-bit.github.io/jeux/parcours-arc-en-ciel/ |
+| 🕵️ Espion Orbital | https://olivierusso-bit.github.io/jeux/espion-orbital/ |
 
 ## Ajouter un jeu
 1. Créer un dossier (ex. `mon-jeu/`) avec un `index.html` dedans.
