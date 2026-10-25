@@ -11,6 +11,7 @@ Page d'accueil : **https://olivierusso-bit.github.io/jeux/**
 | 🌈 Parcours Arc-en-ciel | https://olivierusso-bit.github.io/jeux/parcours-arc-en-ciel/ |
 | 🕵️ Espion Orbital | https://olivierusso-bit.github.io/jeux/espion-orbital/ |
 | 🔥 Gardiens du Feu | https://olivierusso-bit.github.io/jeux/gardiens-du-feu/ |
+| 🌸 Éclats d'Aurore | https://olivierusso-bit.github.io/jeux/eclats-aurore/ |
 
 ## Ajouter un jeu
 1. Créer un dossier (ex. `mon-jeu/`) avec un `index.html` dedans.
