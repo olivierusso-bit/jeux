@@ -10,6 +10,7 @@ Page d'accueil : **https://olivierusso-bit.github.io/jeux/**
 | 🪂 Battle Royale 10h | https://olivierusso-bit.github.io/jeux/battle-royale-10h/ |
 | 🌈 Parcours Arc-en-ciel | https://olivierusso-bit.github.io/jeux/parcours-arc-en-ciel/ |
 | 🕵️ Espion Orbital | https://olivierusso-bit.github.io/jeux/espion-orbital/ |
+| 🔥 Gardiens du Feu | https://olivierusso-bit.github.io/jeux/gardiens-du-feu/ |
 
 ## Ajouter un jeu
 1. Créer un dossier (ex. `mon-jeu/`) avec un `index.html` dedans.
