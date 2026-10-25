@@ -13,9 +13,22 @@
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -10%,#2a3f7a,var(--bg) 60%);color:#fff;
   font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:max(16px,env(safe-area-inset-top)) 16px 40px;-webkit-tap-highlight-color:transparent}
-header{text-align:center;margin:10px 0 22px}
+header{text-align:center;margin:10px 0 18px}
 h1{font-size:34px;font-weight:900;margin:0;color:#ffe08a;text-shadow:0 3px 0 #000,0 0 18px rgba(255,180,0,.5)}
 header p{margin:6px 0 0;opacity:.8}
+
+/* ===== Barre de recherche ===== */
+.search{max-width:900px;margin:0 auto 22px;position:relative}
+.search input{width:100%;font-size:18px;font-weight:600;color:#fff;
+  background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.18);border-radius:16px;
+  padding:14px 44px 14px 46px;outline:none;transition:border-color .15s,background .15s;-webkit-appearance:none}
+.search input::placeholder{color:rgba(255,255,255,.55);font-weight:500}
+.search input:focus{border-color:var(--gold);background:rgba(255,255,255,.12)}
+.search .loupe{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:20px;opacity:.7;pointer-events:none}
+.search .clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:30px;height:30px;border:0;
+  background:rgba(255,255,255,.18);color:#fff;border-radius:50%;font-size:18px;line-height:1;cursor:pointer;display:none}
+.search .clear.show{display:block}
+
 h2{font-size:20px;margin:26px auto 12px;max-width:900px;display:flex;align-items:center;gap:8px}
 h2::after{content:"";flex:1;height:2px;background:rgba(255,255,255,.12);border-radius:2px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;max-width:900px;margin:0 auto}
@@ -23,11 +36,13 @@ a.game{display:flex;flex-direction:column;align-items:center;justify-content:cen
   background:linear-gradient(160deg,var(--c1,#2f4f9e),var(--c2,#1b2f63));border-radius:18px;padding:18px 10px 16px;min-height:170px;
   box-shadow:0 5px 0 rgba(0,0,0,.35);transition:transform .08s}
 a.game:active{transform:translateY(3px) scale(.98);box-shadow:0 2px 0 rgba(0,0,0,.35)}
+a.game.hidden{display:none}
 .ico{font-size:58px;line-height:1;filter:drop-shadow(0 3px 2px rgba(0,0,0,.35))}
 .name{font-weight:800;font-size:17px;margin-top:10px;text-align:center}
 .desc{font-size:12.5px;opacity:.85;margin-top:4px;text-align:center}
 .tag{font-size:11px;font-weight:700;background:rgba(0,0,0,.3);padding:2px 8px;border-radius:99px;margin-top:8px}
 .soon{opacity:.45;pointer-events:none}
+#empty{display:none;text-align:center;opacity:.7;max-width:900px;margin:30px auto;font-size:16px}
 footer{text-align:center;opacity:.55;font-size:12px;margin-top:34px}
 </style>
 </head>
@@ -36,68 +51,106 @@ footer{text-align:center;opacity:.55;font-size:12px;margin-top:34px}
   <h1>🎮 Mes Jeux</h1>
   <p>Touche un jeu pour jouer</p>
 </header>
-<main id="sections"></main>
+
+<div class="search">
+  <span class="loupe">🔍</span>
+  <input id="q" type="search" inputmode="search" autocomplete="off" autocapitalize="off" spellcheck="false"
+         placeholder="Chercher un jeu…" aria-label="Chercher un jeu">
+  <button id="clear" class="clear" aria-label="Effacer">✕</button>
+</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <div id="empty">Aucun jeu trouvé 🙁</div>
+</main>
 <footer>Astuce iPhone : Partager → « Sur l'écran d'accueil » pour garder cette page comme une appli.</footer>
 
 <script>
 // ===== LISTE DES JEUX =====
 // Pour ajouter un jeu : mettre son dossier dans le dépôt, puis ajouter une ligne ici.
-// Pour une nouvelle section : ajouter un bloc { titre, jeux: [...] }.
-const SECTIONS = [
-  { titre: "⚔️ Stratégie", jeux: [
-    { nom: "Bataille des Tours", dossier: "bataille-des-tours", icone: "🏰",
-      desc: "Pose tes cartes, détruis les tours !", tag: "Vertical", c1: "#3b6fd8", c2: "#7a2a2a" }
-  ]},
-  { titre: "🏃 Course", jeux: [
-    { nom: "Métro Rush", dossier: "metro-rush", icone: "🚇",
-      desc: "Cours sur les rails, esquive les trains !", tag: "Vertical ou paysage", c1: "#ff5a36", c2: "#263056" }
-  ]},
-  { titre: "💥 Combat", jeux: [
-    { nom: "Méga Bagarre", dossier: "mega-bagarre", icone: "🦆",
-      desc: "Bagarre de canards en 3D : 4 modes, classé, pass !", tag: "Paysage", c1: "#ffb300", c2: "#1d4fd8" },
-    { nom: "Battle Royale 10h", dossier: "battle-royale-10h", icone: "🪂",
-      desc: "Saute du bus, construis, sois le dernier debout !", tag: "Paysage", c1: "#3fa0ff", c2: "#0b2a7a" }
-  ]},
-  { titre: "🧗 Parcours", jeux: [
-    { nom: "Parcours Arc-en-ciel", dossier: "parcours-arc-en-ciel", icone: "🌈",
-      desc: "200 niveaux dans 10 mondes colorés !", tag: "Paysage ou vertical", c1: "#ff4fc3", c2: "#3d6bff" }
-  ]},
-  { titre: "🌲 Survie", jeux: [
-    { nom: "Gardiens du Feu", dossier: "gardiens-du-feu", icone: "🔥",
-      desc: "Survis 99 nuits dans la forêt en 3D !", tag: "Paysage ou vertical", c1: "#ff8a1f", c2: "#1f4d2b" }
-  ]},
-  { titre: "🕵️ Enquête", jeux: [
-    { nom: "Espion Orbital", dossier: "espion-orbital", icone: "🕵️",
-      desc: "Un espion parmi les robots : démasque-le !", tag: "Vertical ou paysage", c1: "#7df9ff", c2: "#3a1d6e" }
-  ]},
-  { titre: "🌸 Aventure", jeux: [
-    { nom: "Éclats d'Aurore", dossier: "eclats-aurore", icone: "🌸",
-      desc: "Aventure manga en monde ouvert : 4 héros, moto et Gardien !", tag: "Paysage", c1: "#ff8fcf", c2: "#5a3fb0" }
-  ]},
-  { titre: "🔜 Bientôt", jeux: [
-    { nom: "Jeu à venir", icone: "❔", desc: "Nouveau jeu en préparation", bientot: true },
-    { nom: "Jeu à venir", icone: "❔", desc: "Nouveau jeu en préparation", bientot: true }
-  ]}
+// Les jeux sont affichés dans un ordre AU HASARD à chaque ouverture de la page.
+const JEUX = [
+  { nom: "Bataille des Tours", dossier: "bataille-des-tours", icone: "🏰",
+    desc: "Pose tes cartes, détruis les tours !", tag: "Vertical", c1: "#3b6fd8", c2: "#7a2a2a" },
+  { nom: "Métro Rush", dossier: "metro-rush", icone: "🚇",
+    desc: "Cours sur les rails, esquive les trains !", tag: "Vertical ou paysage", c1: "#ff5a36", c2: "#263056" },
+  { nom: "Méga Bagarre", dossier: "mega-bagarre", icone: "🦆",
+    desc: "Bagarre de canards en 3D : 4 modes, classé, pass !", tag: "Paysage", c1: "#ffb300", c2: "#1d4fd8" },
+  { nom: "Battle Royale 10h", dossier: "battle-royale-10h", icone: "🪂",
+    desc: "Saute du bus, construis, sois le dernier debout !", tag: "Paysage", c1: "#3fa0ff", c2: "#0b2a7a" },
+  { nom: "Parcours Arc-en-ciel", dossier: "parcours-arc-en-ciel", icone: "🌈",
+    desc: "200 niveaux dans 10 mondes colorés !", tag: "Paysage ou vertical", c1: "#ff4fc3", c2: "#3d6bff" },
+  { nom: "Gardiens du Feu", dossier: "gardiens-du-feu", icone: "🔥",
+    desc: "Survis 99 nuits dans la forêt en 3D !", tag: "Paysage ou vertical", c1: "#ff8a1f", c2: "#1f4d2b" },
+  { nom: "Espion Orbital", dossier: "espion-orbital", icone: "🕵️",
+    desc: "Un espion parmi les robots : démasque-le !", tag: "Vertical ou paysage", c1: "#7df9ff", c2: "#3a1d6e" },
+  { nom: "Éclats d'Aurore", dossier: "eclats-aurore", icone: "🌸",
+    desc: "Aventure manga en monde ouvert : 4 héros, moto et Gardien !", tag: "Paysage", c1: "#ff8fcf", c2: "#5a3fb0" }
+];
+// Cases « Bientôt » (jamais mélangées, toujours à la fin, cachées quand on cherche)
+const BIENTOT = [
+  { nom: "Jeu à venir", icone: "❔", desc: "Nouveau jeu en préparation", bientot: true },
+  { nom: "Jeu à venir", icone: "❔", desc: "Nouveau jeu en préparation", bientot: true }
 ];
 
-const root = document.getElementById('sections');
-for (const s of SECTIONS) {
-  const h = document.createElement('h2'); h.textContent = s.titre; root.appendChild(h);
-  const g = document.createElement('div'); g.className = 'grid'; root.appendChild(g);
-  for (const j of s.jeux) {
-    const a = document.createElement('a');
-    a.className = 'game' + (j.bientot ? ' soon' : '');
-    if (!j.bientot) a.href = './' + j.dossier + '/';
-    if (j.c1) a.style.setProperty('--c1', j.c1);
-    if (j.c2) a.style.setProperty('--c2', j.c2);
-    a.innerHTML = '<div class="ico"></div><div class="name"></div><div class="desc"></div>' + (j.tag ? '<div class="tag"></div>' : '');
-    a.querySelector('.ico').textContent = j.icone;
-    a.querySelector('.name').textContent = j.nom;
-    a.querySelector('.desc').textContent = j.desc || '';
-    if (j.tag) a.querySelector('.tag').textContent = j.tag;
-    g.appendChild(a);
+// Mélange au hasard (Fisher-Yates)
+function melanger(arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
   }
+  return a;
 }
+// Enlève les accents + minuscules, pour que "eclats" trouve "Éclats d'Aurore"
+function normaliser(s){
+  return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
+
+const grid = document.getElementById('grid');
+const empty = document.getElementById('empty');
+const q = document.getElementById('q');
+const clear = document.getElementById('clear');
+
+// Construit une carte de jeu
+function carte(j){
+  const a = document.createElement('a');
+  a.className = 'game' + (j.bientot ? ' soon' : '');
+  if (!j.bientot) a.href = './' + j.dossier + '/';
+  if (j.c1) a.style.setProperty('--c1', j.c1);
+  if (j.c2) a.style.setProperty('--c2', j.c2);
+  a.dataset.bientot = j.bientot ? '1' : '0';
+  a.dataset.recherche = normaliser(j.nom) + ' ' + normaliser(j.desc);
+  a.innerHTML = '<div class="ico"></div><div class="name"></div><div class="desc"></div>' + (j.tag ? '<div class="tag"></div>' : '');
+  a.querySelector('.ico').textContent = j.icone;
+  a.querySelector('.name').textContent = j.nom;
+  a.querySelector('.desc').textContent = j.desc || '';
+  if (j.tag) a.querySelector('.tag').textContent = j.tag;
+  return a;
+}
+
+// Affiche tous les jeux (mélangés) puis les cases Bientôt
+for (const j of melanger(JEUX)) grid.appendChild(carte(j));
+for (const j of BIENTOT) grid.appendChild(carte(j));
+
+// Filtre quand on tape dans la recherche
+function filtrer(){
+  const terme = normaliser(q.value.trim());
+  clear.classList.toggle('show', q.value.length > 0);
+  let trouves = 0;
+  for (const a of grid.children){
+    const estBientot = a.dataset.bientot === '1';
+    // on cache les cases "Bientôt" dès qu'on cherche quelque chose
+    if (terme && estBientot){ a.classList.add('hidden'); continue; }
+    const ok = !terme || a.dataset.recherche.includes(terme);
+    a.classList.toggle('hidden', !ok);
+    if (ok && !estBientot) trouves++;
+  }
+  empty.style.display = (terme && trouves === 0) ? 'block' : 'none';
+}
+
+q.addEventListener('input', filtrer);
+clear.addEventListener('click', function(){ q.value = ''; filtrer(); q.focus(); });
 </script>
 </body>
 </html>

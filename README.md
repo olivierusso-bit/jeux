@@ -15,4 +15,6 @@ Page d'accueil : **https://olivierusso-bit.github.io/jeux/**
 
 ## Ajouter un jeu
 1. Créer un dossier (ex. `mon-jeu/`) avec un `index.html` dedans.
-2. Ajouter une ligne dans la liste `SECTIONS` de `index.html` (page d'accueil).
+2. Ajouter une ligne dans la liste `JEUX` de `index.html` (page d'accueil).
+
+Les jeux s'affichent dans un ordre au hasard à chaque ouverture, et une barre de recherche permet de trouver un jeu par son nom.
